@@ -7,3 +7,9 @@ or
 ### To runt front-end
 
 `npm run start // runs at localhost:3000`
+
+### Development Workflow
+
+anytime you change a table
+go to package json and name migration in `migration:generate`
+`npm run`
