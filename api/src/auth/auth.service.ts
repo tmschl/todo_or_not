@@ -11,9 +11,12 @@ export class AuthService {
     if (user !== null) {
       // compare the passwords
       const passwordsMatch = bcrypt.compare(password, user.password);
+      console.log('THEY MATCH');
     } else {
       console.log('user does not exist')
     }
+
+    return user;
   }
 
   async hashPassword(password) {

@@ -21,8 +21,9 @@ export class AuthController {
 
   @Post('/log-in')
   async logIn(@Body() logInDto: LogInDto) {
-    const fullAuth = this.authService.logIn(logInDto.username, logInDto.password);
-    return fullAuth;
+    const userCheck = await this.authService.logIn(logInDto.username, logInDto.password);
+    console.log(userCheck);
+    return userCheck;
   }
 
   @Post('/sign-up')
