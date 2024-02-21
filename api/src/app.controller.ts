@@ -15,8 +15,8 @@ export class AppController {
   //   return fullName;
   // }
 
-  // @Get()
-  // async getNames() {
-  //   return this.appService.getNames();
-  // }
+  @Get()
+  async getNames() {
+    return this.appService.getNames();
+  }
 }

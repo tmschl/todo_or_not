@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { User } from './users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class AppService {
   //   return await this.getNames(); 
   // }
 
-  // async getNames() {
-  //   return await this.namesRepository.find();
-  // }
+  async getNames() {
+    return await this.namesRepository.find();
+  }
 }
