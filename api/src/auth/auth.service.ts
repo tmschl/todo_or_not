@@ -13,13 +13,12 @@ export class AuthService {
   async logIn(username, password) {
     const user = await this.usersService.findUserByUsername(username);
     if (user !== null) {
-      // compare the passwords
       const passwordsMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordsMatch) {
         throw new UnauthorizedException();
-        // create and send JWT
       } 
+
       const payload = { sub: user.id, username: user.username }; 
       return {
         access_token: await this.jwtService.signAsync(payload)
