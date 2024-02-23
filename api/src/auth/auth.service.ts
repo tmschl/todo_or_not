@@ -34,9 +34,10 @@ export class AuthService {
     return await bcrypt.hash(password, 10)
   }
 
-  async signUp(name, email, username, password) {
-    const hashedPassword = await this.hashPassword(password);
-    const user = await this.usersService.addUser(name, email, username, hashedPassword);
+  async signUp(signUpDto) {
+    const hashedPassword = await this.hashPassword(signUpDto.password);
+    const user = await this.usersService.addUser(signUpDto.name, signUpDto.email, signUpDto.username, hashedPassword);
     console.log('USER', user)
+    return user;
   }
 }
