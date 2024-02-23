@@ -40,6 +40,5 @@ export class AuthService {
     console.log('USER', user)
     console.log('sign pu data', signUpDto);
     return 'fake token';
-    // return user;
   }
 }
