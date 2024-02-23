@@ -38,6 +38,8 @@ export class AuthService {
     const hashedPassword = await this.hashPassword(signUpDto.password);
     const user = await this.usersService.addUser(signUpDto.name, signUpDto.email, signUpDto.username, hashedPassword);
     console.log('USER', user)
-    return user;
+    console.log('sign pu data', signUpDto);
+    return 'fake token';
+    // return user;
   }
 }
