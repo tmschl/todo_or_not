@@ -1,6 +1,7 @@
-import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Text } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const isInvalidEmail = (email: string) => {
   const emailFormat = /\S+@\S+\.\S+/;
@@ -20,6 +21,9 @@ const isInvalidPass2 = (pass1: string, pass2: string) => {
 }
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const toast = useToast();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -81,24 +85,39 @@ const SignUp = () => {
       ) {
       return;
     } else {
-      axios.post('http://localhost:3025/auth/sign-up', {
-        name,
-        email,
-        username,
-        password,
-      }).then((response) => {
-        console.log("RESPONSE", response);
-        setName('');
-        setEmail('');
-        setUsername('');
-        setPassword('');
-        setSecondPassword('');
-        setSubmitClickedName(false);
-        setSubmitClickedEmail(false);
-        setSubmitClickedUsername(false);
-        setSubmitClickedPassword(false);
-        setSubmitClickedSecondPassword(false);
-     });
+      axios
+        .post('http://localhost:3025/auth/sign-up', {
+          name,
+          email,
+          username,
+          password,
+        }).then((response) => {
+          console.log("RESPONSE", response);
+          const token = response.data;
+          localStorage.setItem("token", token);
+
+
+          setName('');
+          setEmail('');
+          setUsername('');
+          setPassword('');
+          setSecondPassword('');
+          setSubmitClickedName(false);
+          setSubmitClickedEmail(false);
+          setSubmitClickedUsername(false);
+          setSubmitClickedPassword(false);
+          setSubmitClickedSecondPassword(false);
+
+          navigate('/projects');
+
+          toast({
+            title: 'Account created.',
+            description: "We've created your account for you.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+      });
     }
   }
 
