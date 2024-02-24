@@ -31,14 +31,20 @@ export class AuthService {
   }
 
   async hashPassword(password) {
-    return await bcrypt.hash(password, 10)
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds)
   }
 
   async signUp(signUpDto) {
+    // check if username already exists
+    // check if email already exists
+
+
     const hashedPassword = await this.hashPassword(signUpDto.password);
-    const user = await this.usersService.addUser(signUpDto.name, signUpDto.email, signUpDto.username, hashedPassword);
-    console.log('USER', user)
-    console.log('sign pu data', signUpDto);
+    console.log(hashedPassword);
+    signUpDto.password = hashedPassword
+    const user = await this.usersService.addUser(signUpDto);
+
     return 'fake token';
   }
 }
