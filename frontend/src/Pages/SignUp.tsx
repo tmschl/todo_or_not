@@ -1,3 +1,5 @@
+// refactor
+
 import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
@@ -19,6 +21,7 @@ const isInvalidPass2 = (pass1: string, pass2: string) => {
     return false;
   }
 }
+
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -95,8 +98,6 @@ const SignUp = () => {
           console.log("RESPONSE", response);
           const token = response.data;
           localStorage.setItem("token", token);
-
-
           setName('');
           setEmail('');
           setUsername('');
@@ -109,7 +110,6 @@ const SignUp = () => {
           setSubmitClickedSecondPassword(false);
 
           navigate('/projects');
-
           toast({
             title: 'Account created.',
             description: "We've created your account for you.",
@@ -117,7 +117,26 @@ const SignUp = () => {
             duration: 9000,
             isClosable: true,
           })
-      });
+      }).catch((error) => {
+          setName('');
+          setEmail('');
+          setUsername('');
+          setPassword('');
+          setSecondPassword('');
+          setSubmitClickedName(false);
+          setSubmitClickedEmail(false);
+          setSubmitClickedUsername(false);
+          setSubmitClickedPassword(false);
+          setSubmitClickedSecondPassword(false);
+          console.log('ERROR', error)
+          toast({
+            title: 'Error',
+            description: "There was an error",
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          })
+      })
     }
   }
 

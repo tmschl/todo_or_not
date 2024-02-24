@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -13,21 +13,19 @@ export class AuthService {
   async logIn(username, password) {
     const user = await this.usersService.findUserByUsername(username);
     if (user !== null) {
-      const passwordsMatch = await bcrypt.compare(password, user.password);
-
+      const passwordsMatch = await bcrypt.compare(password, password);
       if (!passwordsMatch) {
         throw new UnauthorizedException();
       } 
-
-      const payload = { sub: user.id, username: user.username }; 
-      return {
-        access_token: await this.jwtService.signAsync(payload)
-      }
-
     } else {
       console.log('user does not exist')
     }
 
+  }
+
+  async createAccessToken(user) {
+    const payload = { sub: user.id, username: user.username }; 
+    return await this.jwtService.signAsync(payload)
   }
 
   async hashPassword(password) {
@@ -36,15 +34,22 @@ export class AuthService {
   }
 
   async signUp(signUpDto) {
-    // check if username already exists
-    // check if email already exists
+    const usernameExists = (await this.usersService.findUserByUsername(signUpDto.username)).length > 0;
+    const emailExists = (await this.usersService.findUserByEmail(signUpDto.email)).length > 0;
 
+    if (usernameExists) {
+      throw new BadRequestException('username already exists');
+    }
+
+    if (emailExists) {
+      throw new BadRequestException('email already exists');
+    }
 
     const hashedPassword = await this.hashPassword(signUpDto.password);
-    console.log(hashedPassword);
     signUpDto.password = hashedPassword
-    const user = await this.usersService.addUser(signUpDto);
 
-    return 'fake token';
+    const user = await this.usersService.createUser(signUpDto);
+    console.log(user);
+    return this.createAccessToken(user);
   }
 }
