@@ -34,11 +34,14 @@ export class AuthController {
   
   
   @UseGuards(AuthGuard)
-
-  @Get('/user')
-  getUserData(@Request() req) {
+  @Get('/user-details')
+  getUser(@Request() req) {
     console.log('REQ USER', req.user);
-    return req.user;
+    if (req.user) {
+      return req.user;
+    } else {
+      return 'no request';
+    }
   }
   
   @Post('/log-in')
@@ -48,9 +51,11 @@ export class AuthController {
       return userCheck;
     }
     
-    @Post('/sign-up')
-    async signUp(@Body() signUpDto: SignUpDto) {
-      console.log(signUpDto);
-      return await this.authService.signUp(signUpDto);
-    }
+  @Post('/sign-up')
+  async signUp(@Body() signUpDto: SignUpDto) {
+    console.log(signUpDto);
+    return await this.authService.signUp(signUpDto);
+  }
+
+
 }
