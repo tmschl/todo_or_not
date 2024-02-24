@@ -11,17 +11,29 @@ export class AuthService {
   ) {}
 
   async logIn(logInDto) {
-    console.log(logInDto);
-    // const user = await this.usersService.findUserByUsername(username);
-    // if (user !== null) {
-    //   const passwordsMatch = await bcrypt.compare(password, password);
-    //   if (!passwordsMatch) {
-    //     throw new UnauthorizedException();
-    //   } 
-    // } else {
-    //   console.log('user does not exist')
-    // }
-    return 'fake token';
+    // check that user exists
+    const user = await this.usersService.findUserByUsername(logInDto.username);
+
+    // if user doesn't exist, throw unauthorized error
+    if (!user) {
+      throw new UnauthorizedException('username does not exist')
+    }
+
+    // verify that passwords match
+    const passwordsMatch = await this.verifyPassword(logInDto.password, user.password);
+
+    // if the passwords don't match, throw unauthorized error
+    if (!passwordsMatch) {
+      throw new UnauthorizedException('incorrect password');
+    }
+
+    const token = this.createAccessToken(user)
+
+    return token;
+  }
+
+  async verifyPassword(enteredPassword: string, existingPassword: string) {
+    return await bcrypt.compare(enteredPassword, existingPassword);
   }
 
   async createAccessToken(user) {
@@ -35,8 +47,8 @@ export class AuthService {
   }
 
   async signUp(signUpDto) {
-    const usernameExists = (await this.usersService.findUserByUsername(signUpDto.username)).length > 0;
-    const emailExists = (await this.usersService.findUserByEmail(signUpDto.email)).length > 0;
+    const usernameExists = (await this.usersService.findUserByUsername(signUpDto.username))?.username;
+    const emailExists = (await this.usersService.findUserByEmail(signUpDto.email))?.email;
 
     if (usernameExists) {
       throw new BadRequestException('username already exists');

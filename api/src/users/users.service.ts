@@ -12,11 +12,11 @@ export class UsersService {
   ) {}
 
   async findUserByUsername(username: string) {
-    return await this.userRepository.findBy({ username });
+    return await this.userRepository.findOneBy({ username });
   }
 
   async findUserByEmail(email: string) {
-    return await this.userRepository.findBy({ email })
+    return await this.userRepository.findOneBy({ email })
   }
 
   async createUser(user: SignUpDto) {

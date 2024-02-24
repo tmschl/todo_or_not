@@ -118,6 +118,7 @@ const SignUp = () => {
             isClosable: true,
           })
       }).catch((error) => {
+          console.log('err', error);
           setName('');
           setEmail('');
           setUsername('');

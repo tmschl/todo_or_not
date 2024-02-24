@@ -52,6 +52,7 @@ const LogIn = () => {
             isClosable: true,
           })
       }).catch((error) => {
+          console.log(error);
           setUsername('');
           setPassword('');
 
