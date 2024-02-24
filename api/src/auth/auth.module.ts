@@ -13,18 +13,11 @@ import jwt from 'src/config/jwt';
       load: [jwt]
     }),
     UsersModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-    useFactory: async (configService: ConfigService) => {
-      return {
-        secret: configService.get('jwt').secret,
-        signOptions: {
-          expiresIn: '30s',
-        },
-      };
-    },
-    inject: [ConfigService],
-    })
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60s' },
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService],
