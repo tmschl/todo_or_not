@@ -10,17 +10,18 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async logIn(username, password) {
-    const user = await this.usersService.findUserByUsername(username);
-    if (user !== null) {
-      const passwordsMatch = await bcrypt.compare(password, password);
-      if (!passwordsMatch) {
-        throw new UnauthorizedException();
-      } 
-    } else {
-      console.log('user does not exist')
-    }
-
+  async logIn(logInDto) {
+    console.log(logInDto);
+    // const user = await this.usersService.findUserByUsername(username);
+    // if (user !== null) {
+    //   const passwordsMatch = await bcrypt.compare(password, password);
+    //   if (!passwordsMatch) {
+    //     throw new UnauthorizedException();
+    //   } 
+    // } else {
+    //   console.log('user does not exist')
+    // }
+    return 'fake token';
   }
 
   async createAccessToken(user) {

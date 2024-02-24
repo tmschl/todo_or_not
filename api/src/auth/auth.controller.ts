@@ -6,25 +6,32 @@ import * as sanitizeHtml from 'sanitize-html';
 import { Transform } from 'class-transformer';
 
 
-type LogInDto = {
-  username: string;
-  password: string;
-}
 
 export class SignUpDto {
   @IsNotEmpty()
   @Transform((params) => sanitizeHtml(params.value))
   name: string;
-
+  
   @IsEmail()
   @Transform((params) => sanitizeHtml(params.value))
   email: string;
+  
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  username: string;
+  
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  password: string;
+}
 
+export class LogInDto {
   @IsNotEmpty()
   @Transform((params) => sanitizeHtml(params.value))
   username: string;
 
   @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
   password: string;
 }
 
@@ -46,7 +53,7 @@ export class AuthController {
   
   @Post('/log-in')
   async logIn(@Body() logInDto: LogInDto) {
-      const userCheck = await this.authService.logIn(logInDto.username, logInDto.password);
+      const userCheck = await this.authService.logIn(logInDto);
       console.log(userCheck);
       return userCheck;
     }
