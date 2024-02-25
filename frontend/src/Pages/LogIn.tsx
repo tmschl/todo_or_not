@@ -71,33 +71,33 @@ const LogIn = () => {
   }
   return (    
     <Box>
-        <Text textAlign="center" mb={4} fontSize={20} >Log into Your Account</Text>
-        <Box 
-          maxW="75%" 
-          display="flex" 
-          flexDirection="column" 
-          alignItems="center" 
-          margin="0 auto"
-          gap={4}
-        >
-          <FormControl isInvalid={isErrorUsername} isRequired>
-            <FormLabel>Username</FormLabel>
-            <Input type='text' value={username} onChange={onChangeUsername} />
-            {!isErrorUsername ? null :  (
-              <FormErrorMessage>Username is required.</FormErrorMessage>
-            )}
-          </FormControl>
+      <Text textAlign="center" mb={4} fontSize={20} >Log into Your Account</Text>
+      <Box 
+        maxW="75%" 
+        display="flex" 
+        flexDirection="column" 
+        alignItems="center" 
+        margin="0 auto"
+        gap={4}
+      >
+        <FormControl isInvalid={isErrorUsername} isRequired>
+          <FormLabel>Username</FormLabel>
+          <Input type='text' value={username} onChange={onChangeUsername} />
+          {!isErrorUsername ? null :  (
+            <FormErrorMessage>Username is required.</FormErrorMessage>
+          )}
+        </FormControl>
 
-          <FormControl isInvalid={isErrorPassword} isRequired>
-            <FormLabel>Password</FormLabel>
-            <Input type='password' value={password} onChange={onChangePassword} />
-            {!isErrorPassword ? null :  (
-              <FormErrorMessage>Password is required.</FormErrorMessage>
-            )}
-          </FormControl>
-          <Button w="100%" onClick={onSubmit}>Submit</Button>
-        </Box>
+        <FormControl isInvalid={isErrorPassword} isRequired>
+          <FormLabel>Password</FormLabel>
+          <Input type='password' value={password} onChange={onChangePassword} />
+          {!isErrorPassword ? null :  (
+            <FormErrorMessage>Password is required.</FormErrorMessage>
+          )}
+        </FormControl>
+        <Button w="100%" onClick={onSubmit}>Submit</Button>
       </Box>
+    </Box>
   )
 }
 
