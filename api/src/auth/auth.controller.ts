@@ -41,14 +41,9 @@ export class AuthController {
   
   
   @UseGuards(AuthGuard)
-  @Get('/user-details')
-  getUser(@Request() req) {
-    console.log('REQ USER', req.user);
-    if (req.user) {
-      return req.user;
-    } else {
-      return 'no request';
-    }
+  @Get('/profile')
+  getProfileData(@Request() req) {
+    return this.authService.getProfileData(req.user.username);
   }
   
   @Post('/log-in')
