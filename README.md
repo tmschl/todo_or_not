@@ -2,7 +2,8 @@
 
 1. clone
 2. npm install
-3. yeehaw
+3. create a feature branch
+4. yeehaw
 
 ### To run back-end
 

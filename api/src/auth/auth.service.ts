@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -10,34 +10,67 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async logIn(username, password) {
-    const user = await this.usersService.findUserByUsername(username);
-    if (user !== null) {
-      // compare the passwords
-      const passwordsMatch = await bcrypt.compare(password, user.password);
+  async logIn(logInDto) {
+    // check that user exists
+    const user = await this.usersService.findUserByUsername(logInDto.username);
 
-      if (!passwordsMatch) {
-        throw new UnauthorizedException();
-        // create and send JWT
-      } 
-      const payload = { sub: user.id, username: user.username }; 
-      return {
-        access_token: await this.jwtService.signAsync(payload)
-      }
-
-    } else {
-      console.log('user does not exist')
+    // if user doesn't exist, throw unauthorized error
+    if (!user) {
+      throw new UnauthorizedException('username does not exist')
     }
 
+    // verify that passwords match
+    const passwordsMatch = await this.verifyPassword(logInDto.password, user.password);
+
+    // if the passwords don't match, throw unauthorized error
+    if (!passwordsMatch) {
+      throw new UnauthorizedException('incorrect password');
+    }
+
+    const token = this.createAccessToken(user)
+
+    return token;
+  }
+
+  async verifyPassword(enteredPassword: string, existingPassword: string) {
+    return await bcrypt.compare(enteredPassword, existingPassword);
+  }
+
+  async createAccessToken(user) {
+    const payload = { sub: user.id, username: user.username }; 
+    return await this.jwtService.signAsync(payload)
   }
 
   async hashPassword(password) {
-    return await bcrypt.hash(password, 10)
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds)
   }
 
-  async signUp(name, email, username, password) {
-    const hashedPassword = await this.hashPassword(password);
-    const user = await this.usersService.addUser(name, email, username, hashedPassword);
-    console.log('USER', user)
+  async signUp(signUpDto) {
+    const usernameExists = (await this.usersService.findUserByUsername(signUpDto.username))?.username;
+    const emailExists = (await this.usersService.findUserByEmail(signUpDto.email))?.email;
+
+    if (usernameExists) {
+      throw new BadRequestException('username already exists');
+    }
+
+    if (emailExists) {
+      throw new BadRequestException('email already exists');
+    }
+
+    const hashedPassword = await this.hashPassword(signUpDto.password);
+    signUpDto.password = hashedPassword
+
+    const user = await this.usersService.createUser(signUpDto);
+    return this.createAccessToken(user);
+  }
+
+  async getProfileData(username: string) {
+    const user = await this.usersService.findUserByUsername(username);
+    return {
+      user: user.email,
+      name: user.name,
+      username: user.username,
+    }
   }
 }
