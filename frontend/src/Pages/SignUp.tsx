@@ -1,9 +1,8 @@
-// refactor
-
 import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { Context } from "../App";
 
 const isInvalidEmail = (email: string) => {
   const emailFormat = /\S+@\S+\.\S+/;
@@ -26,6 +25,7 @@ const isInvalidPass2 = (pass1: string, pass2: string) => {
 const SignUp = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const context = useOutletContext() as Context;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState('');
@@ -97,6 +97,7 @@ const SignUp = () => {
         }).then((response) => {
           console.log("RESPONSE", response);
           const token = response.data;
+          context.toggleLoggedIn();
           localStorage.setItem("token", token);
           setName('');
           setEmail('');

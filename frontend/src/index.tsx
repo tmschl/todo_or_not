@@ -8,12 +8,31 @@ import LogIn from './Pages/LogIn';
 import Projects from './Pages/Projects';
 import Profile from './Pages/Profile';
 import axios from 'axios';
+import { Toast, createStandaloneToast } from '@chakra-ui/react';
+
+const { ToastContainer, toast } = createStandaloneToast()
 
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    loader: async () => {
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        try {
+          const response = await axios.get('http://localhost:3025/auth/profile', {
+            headers: { Authorization: `Bearer ${token}`}
+          })
+          return response.data;
+        } catch (error) {
+          return {};
+        }
+      } else {
+        return {}; 
+      }
+    },
     children: [
     { 
       path: "/sign-up",
@@ -29,10 +48,8 @@ const router = createBrowserRouter([
       path: "/profile",
       element: <Profile />,
       loader: async () => {
-        // get a token from local storage
         const token = localStorage.getItem('token');
 
-        // if we have a token, we'll use it as a bearer token on our request for user data
         if (token) {
           try {
             const response = await axios.get('http://localhost:3025/auth/profile', {
@@ -40,23 +57,38 @@ const router = createBrowserRouter([
             })
             return response.data;
           } catch (error) {
-            console.log(error);
+            toast({
+              title: 'An error occurred.',
+              description: 'You must be signed in to view this page!',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
             return redirect("/log-in")
           }
         } else {
-          console.log('NO TOKEN');
+          toast({
+            title: 'An error occurred.',
+            description: 'You must have an account to view this page',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          })
           return redirect('/sign-up')
         }
-
-        // if we do not have a token, we will show an error toast and redirect the user to the sign-up page
-
       },
     },
     ],
   },
 ]);
-console.log("router", router);
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render( <RouterProvider router={ router }/> );
+
+root.render(
+  <>
+    <ToastContainer />
+    <RouterProvider router={ router }/> 
+  </> 
+);

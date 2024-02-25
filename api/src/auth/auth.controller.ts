@@ -49,13 +49,11 @@ export class AuthController {
   @Post('/log-in')
   async logIn(@Body() logInDto: LogInDto) {
       const userCheck = await this.authService.logIn(logInDto);
-      console.log(userCheck);
       return userCheck;
     }
     
   @Post('/sign-up')
   async signUp(@Body() signUpDto: SignUpDto) {
-    console.log(signUpDto);
     return await this.authService.signUp(signUpDto);
   }
 

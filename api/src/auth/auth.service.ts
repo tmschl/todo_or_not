@@ -62,12 +62,10 @@ export class AuthService {
     signUpDto.password = hashedPassword
 
     const user = await this.usersService.createUser(signUpDto);
-    console.log(user);
     return this.createAccessToken(user);
   }
 
   async getProfileData(username: string) {
-    console.log(username);
     const user = await this.usersService.findUserByUsername(username);
     return {
       user: user.email,

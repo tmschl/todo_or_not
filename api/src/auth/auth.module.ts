@@ -16,7 +16,7 @@ import jwt from 'src/config/jwt';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '120s' },
+      signOptions: { expiresIn: '15s' },
     }),
   ],
   controllers: [AuthController],
