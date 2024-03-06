@@ -38,7 +38,8 @@ export class AuthService {
   }
 
   async createAccessToken(user) {
-    const payload = { sub: user.id, username: user.username }; 
+    console.log('user', user.id);
+    const payload = { sub: user.id }; 
     return await this.jwtService.signAsync(payload)
   }
 
@@ -66,8 +67,8 @@ export class AuthService {
     return this.createAccessToken(user);
   }
 
-  async getProfileData(username: string) {
-    const user = await this.usersService.findUserByUsername(username);
+  async getProfileData(id: number) {
+    const user = await this.usersService.findUserById(id);
     return {
       email: user.email,
       name: user.name,
@@ -89,6 +90,12 @@ export class AuthService {
       user[accountDetailDto.field] = accountDetailDto.value;
     }
 
-    return await this.usersService.createUser(user);
+    const updatedUser = await this.usersService.createUser(user);
+
+    return {
+      name: updatedUser.name,
+      email: updatedUser.email,
+      username: updatedUser.username,
+    }
   }
 }

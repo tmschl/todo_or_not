@@ -4,14 +4,16 @@ import { isValidDateValue } from "@testing-library/user-event/dist/utils";
 import axios from "axios";
 import { useState } from "react";
 import { isInvalidEmail } from "../../Pages/SignUp";
+import { Data } from "../../Pages/Profile";
 
 type Props = {
   field: string;
   value: string;
   username: string;
+  setData: React.Dispatch<React.SetStateAction<Data>>;
 }
 
-const UserDetailsRow = ({ field, value, username }: Props) => {
+const UserDetailsRow = ({ field, value, username, setData }: Props) => {
   const toast = useToast();
 
   const [updateField, setUpdateField] = useState(false);
@@ -71,7 +73,7 @@ const UserDetailsRow = ({ field, value, username }: Props) => {
       }, { headers: { Authorization: `Bearer ${token}`} })
       .then((response) => {
         console.log( 'hi', response.data );
-
+        setData(response.data);
         toast({
           title: 'Success',
           description: "You have updated your account details",
@@ -79,7 +81,17 @@ const UserDetailsRow = ({ field, value, username }: Props) => {
           duration: 3000,
           isClosable: true,
         })
-      });
+      })
+      .catch((error) => {
+        console.log('error', error)
+        toast({
+          title: 'Error',
+          description: "There was an error. Please review your values and try again.",
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        }) 
+      })
   }
 
   return (
