@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { AccountDetailDto } from './auth.controller';
 
 @Injectable()
 export class AuthService {
@@ -68,9 +69,26 @@ export class AuthService {
   async getProfileData(username: string) {
     const user = await this.usersService.findUserByUsername(username);
     return {
-      user: user.email,
+      email: user.email,
       name: user.name,
       username: user.username,
     }
+  }
+
+  async changeAccountDetail(accountDetailDto: AccountDetailDto) {
+    const user = await this.usersService.findUserByUsername(
+      accountDetailDto.username
+    );
+
+    if (accountDetailDto.field === 'password') {
+      console.log('made it to password', accountDetailDto.value)
+      const plainTestPassword = accountDetailDto.value;
+      const hashedPassword =  await this.hashPassword(plainTestPassword);
+      user[accountDetailDto.field] = hashedPassword;
+    } else {
+      user[accountDetailDto.field] = accountDetailDto.value;
+    }
+
+    return await this.usersService.createUser(user);
   }
 }

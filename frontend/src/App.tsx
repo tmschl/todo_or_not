@@ -27,8 +27,6 @@ function App() {
     toggleLoggedIn,
   }
   
-  console.log('logged in', loggedIn);
-
   return (
     <ChakraProvider>
       <Header loggedIn={loggedIn} />

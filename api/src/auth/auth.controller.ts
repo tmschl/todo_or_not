@@ -35,27 +35,44 @@ export class LogInDto {
   password: string;
 }
 
+export class AccountDetailDto {
+  @IsNotEmpty()
+  username: string;
+
+  @IsNotEmpty()
+  field: string;
+
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor( private readonly authService: AuthService ) {}
-  
-  
-  @UseGuards(AuthGuard)
-  @Get('/profile')
-  getProfileData(@Request() req) {
-    return this.authService.getProfileData(req.user.username);
-  }
-  
-  @Post('/log-in')
-  async logIn(@Body() logInDto: LogInDto) {
-      const userCheck = await this.authService.logIn(logInDto);
-      return userCheck;
-    }
-    
+
   @Post('/sign-up')
   async signUp(@Body() signUpDto: SignUpDto) {
     return await this.authService.signUp(signUpDto);
   }
 
+  @Post('/log-in')
+  async logIn(@Body() logInDto: LogInDto) {
+      const userCheck = await this.authService.logIn(logInDto);
+      return userCheck;
+    }
+  
+    @UseGuards(AuthGuard)
+    @Post('change-account-detail')
+    changeAccountDetail(@Body() accountDetailDto: AccountDetailDto) {
+      return this.authService.changeAccountDetail(accountDetailDto);
+    }
 
+    @UseGuards(AuthGuard)
+    @Get('/profile')
+    getProfileData(@Request() req) {
+      return this.authService.getProfileData(req.user.username);
+    }
+
+  
 }

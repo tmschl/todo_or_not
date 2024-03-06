@@ -1,13 +1,24 @@
-import { Box, Button, Text, useToast } from "@chakra-ui/react"
+import { Avatar, Box, Button, Text, useToast, IconButton } from "@chakra-ui/react"
 import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
 import { Context } from "../App";
+import { EditIcon } from "@chakra-ui/icons";
+import UserDetailsRow from "../Components/Profile/UserDetailsRow";
+
+
+type Data = {
+  email: string;
+  name: string;
+  username: string
+}
 
 const Profile = () => {
-  const data = useLoaderData();
+  const data = useLoaderData() as Data;
   const navigate = useNavigate();
   const toast = useToast();
   const context = useOutletContext() as Context;
 
+  console.log('profile data', data);
+  
   const logOut = () => {
     localStorage.removeItem("token");
     context.toggleLoggedIn();
@@ -26,7 +37,28 @@ const Profile = () => {
       <Text textAlign="center" mb={4} fontSize={20} >
         Account Details
       </Text>
-      <Button onClick={logOut}>Log out</Button>
+      <Text textAlign="center">
+        Welcome, {data.name}! You can manage your account details here. 
+      </Text>
+      <Box display="flex" w="60%" gap={10} m="0 auto" py={20}>
+        <Box display="flex" alignItems="center">
+          <Avatar 
+            size="2xl"
+            name={data.name}
+            bg='teal.100'
+          />
+        </Box>
+        <Box w="100%" display="flex" flexDirection="column" gap={3} >
+          <UserDetailsRow field="Name" value={data.name} username={data.username} />
+          <UserDetailsRow field="Email" value={data.email} username={data.username} />
+          <UserDetailsRow field="Username" value={data.username} username={data.username} />
+          <UserDetailsRow field="Password" value="************" username={data.username}/>
+        </Box>
+      </Box>
+      <Box display="flex" gap={4} justifyContent="center">
+        <Button onClick={logOut}>Log out</Button>
+        <Button onClick={()=> {}}>Delete Account</Button>
+      </Box>
     </Box>
   )
 }
