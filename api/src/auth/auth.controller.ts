@@ -47,6 +47,12 @@ export class AccountDetailDto {
   value: string;
 }
 
+export class Email {
+  @IsEmail(undefined, { message: 'Please enter a valid email!'})
+  @Transform((params) => sanitizeHtml(params.value))
+  email: string;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor( private readonly authService: AuthService ) {}
@@ -58,20 +64,25 @@ export class AuthController {
 
   @Post('/log-in')
   async logIn(@Body() logInDto: LogInDto) {
-      const userCheck = await this.authService.logIn(logInDto);
-      return userCheck;
-    }
-  
-    @UseGuards(AuthGuard)
-    @Post('change-account-detail')
-    changeAccountDetail(@Body() accountDetailDto: AccountDetailDto) {
-      return this.authService.changeAccountDetail(accountDetailDto);
-    }
+    const userCheck = await this.authService.logIn(logInDto);
+    return userCheck;
+  }
 
-    @UseGuards(AuthGuard)
-    @Get('/profile')
-    getProfileData(@Request() req) {
-      console.log('req', req.user);
-      return this.authService.getProfileData(req.user.sub);
-    }
+  @UseGuards(AuthGuard)
+  @Post('change-account-detail')
+  changeAccountDetail(@Body() accountDetailDto: AccountDetailDto) {
+    return this.authService.changeAccountDetail(accountDetailDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/profile')
+  getProfileData(@Request() req) {
+    console.log('req', req.user);
+    return this.authService.getProfileData(req.user.sub);
+  }
+
+  @Post('reset-password')
+  sendResetPasswordEmail(@Body() email: Email) {
+    console.log(email);
+  }
 }
