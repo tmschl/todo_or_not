@@ -120,5 +120,23 @@ export class AuthService {
         // send am email to the user with a link to a reset password page on the frontend with the JWT and userId as params
         return await this.mailService.sendPasswordResetEmail(user, token);
       }
+
+      async saveNewPassword (newPassword: string, id: number, token: string) {
+        const user = await this.usersService.findUserById(id);
+        const payload = await this.jwtService.verifyAsync(token, {
+          secret: user.password,
+        }).catch((error) => {
+          console.log('error', error)
+          throw new UnauthorizedException('token is invalid')
+        }).then (async () => {
+          const hashedPassword = await this.hashPassword(newPassword);
+          user.password = hashedPassword; 
+          return await this.usersService.createUser(user);
+        })
     }
+
+    async deleteUser(id: number) {
+      return await this.usersService.deleteUser(id);
+    }
+  }
     

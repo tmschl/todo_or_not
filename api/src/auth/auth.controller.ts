@@ -47,6 +47,18 @@ export class AccountDetailDto {
   value: string;
 }
 
+export class NewPasswordDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  newPassword: string; 
+
+  @IsNotEmpty()
+  id: number; 
+
+  @IsNotEmpty()
+  token: string; 
+}
+
 export class Email {
   @IsEmail(undefined, { message: 'Please enter a valid email!'})
   @Transform((params) => sanitizeHtml(params.value))
@@ -84,5 +96,16 @@ export class AuthController {
   @Post('reset-password')
   sendResetPasswordEmail(@Body() email: Email) {
     return this.authService.sendResetPasswordEmail(email);
+  }
+
+  @Post('save-new-password')
+  saveNewPassword(@Body() body: NewPasswordDto) {
+    return this.authService.saveNewPassword(body.newPassword, body.id, body.token);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('delete-user')
+  deleteUser(@Request() req) {
+    return this.authService.deleteUser(req.user.sub);
   }
 }

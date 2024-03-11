@@ -26,4 +26,8 @@ export class UsersService {
   async createUser(user: SignUpDto) {
     return await this.userRepository.save({ ...user })
   }
+
+  async deleteUser(id: number) {
+    return await this.userRepository.delete(id);
+  }
 }

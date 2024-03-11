@@ -4,6 +4,7 @@ import { Context } from "../App";
 import { EditIcon } from "@chakra-ui/icons";
 import UserDetailsRow from "../Components/Profile/UserDetailsRow";
 import { useState } from "react";
+import axios from "axios";
 
 
 export type Data = {
@@ -34,6 +35,19 @@ const Profile = () => {
     })
   }
 
+  const deleteAccount = () => {
+    const token = localStorage.getItem("token");
+    axios
+    .post('http://localhost:3025/auth/delete-user', 
+    {}, 
+    {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then((response) => {
+      localStorage.removeItem(token);
+      console.log(response);
+    })
+  }
+
   return (
     <Box>
       <Text textAlign="center" mb={4} fontSize={20} >
@@ -59,7 +73,7 @@ const Profile = () => {
       </Box>
       <Box display="flex" gap={4} justifyContent="center">
         <Button onClick={logOut}>Log out</Button>
-        <Button onClick={()=> {}}>Delete Account</Button>
+        <Button onClick={deleteAccount}>Delete Account</Button>
       </Box>
     </Box>
   )
