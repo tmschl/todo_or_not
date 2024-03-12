@@ -45,6 +45,23 @@ const Profile = () => {
     }).then((response) => {
       localStorage.removeItem(token);
       console.log(response);
+      navigate('/sign-up');
+      toast({
+        title: 'Success',
+        description: "Your account has been deleted",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+    }).catch((error) => {
+      console.log('error', error);
+      toast({
+        title: 'Error',
+        description: "There was an error deleting your account. Please try again!",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
     })
   }
 
