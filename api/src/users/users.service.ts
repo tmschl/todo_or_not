@@ -15,12 +15,19 @@ export class UsersService {
     return await this.userRepository.findOneBy({ username });
   }
 
+  async findUserById(id: number) {
+    return await this.userRepository.findOneBy({ id });
+  }
+  
   async findUserByEmail(email: string) {
     return await this.userRepository.findOneBy({ email })
   }
 
   async createUser(user: SignUpDto) {
     return await this.userRepository.save({ ...user })
+  }
 
+  async deleteUser(id: number) {
+    return await this.userRepository.delete(id);
   }
 }

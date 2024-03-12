@@ -9,6 +9,7 @@ import Projects from './Pages/Projects';
 import Profile from './Pages/Profile';
 import axios from 'axios';
 import { Toast, createStandaloneToast } from '@chakra-ui/react';
+import ResetPassword from './Pages/ResetPassword';
 
 const { ToastContainer, toast } = createStandaloneToast()
 
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
           return redirect('/sign-up')
         }
       },
+    },
+    {
+      path: "/reset-password/:token/:id",
+      element: <ResetPassword />,
     },
     ],
   },
