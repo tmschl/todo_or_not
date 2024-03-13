@@ -5,8 +5,6 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as sanitizeHtml from 'sanitize-html';
 import { Transform } from 'class-transformer';
 
-
-
 export class SignUpDto {
   @IsNotEmpty()
   @Transform((params) => sanitizeHtml(params.value))
@@ -107,5 +105,12 @@ export class AuthController {
   @Post('delete-user')
   deleteUser(@Request() req) {
     return this.authService.deleteUser(req.user.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/user-projects')
+  getUserProjects(@Request() req) {
+    console.log('req', req.user);
+    return this.authService.getProfileData(req.user.sub);
   }
 }
