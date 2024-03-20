@@ -45,6 +45,36 @@ const router = createBrowserRouter([
     },{
       path: "/projects",
       element: <Projects />,
+      loader: async () => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+          try {
+            const response = await axios.get('http://localhost:3025/auth/user-projects', {
+              headers: { Authorization: `Bearer ${token}`}
+            })
+            return response.data;
+          } catch (error) {
+            toast({
+              title: 'An error occurred.',
+              description: 'You must be signed in to view this page!',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
+            return redirect("/log-in")
+          }
+        } else {
+          toast({
+            title: 'An error occurred.',
+            description: 'You must have an account to view this page',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          })
+          return redirect('/sign-up')
+        }
+      },
     },{
       path: "/profile",
       element: <Profile />,

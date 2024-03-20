@@ -20,8 +20,6 @@ const Profile = () => {
   const toast = useToast();
   const context = useOutletContext() as Context;
 
-  console.log('profile data', data);
-  
   const logOut = () => {
     localStorage.removeItem("token");
     context.toggleLoggedIn();
