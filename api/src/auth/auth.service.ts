@@ -157,5 +157,10 @@ export class AuthService {
         projects,
       }
     }
+
+    async getProject(userId: number, id: number) {
+      const projects = await this.projectsService.getUserProjects(userId)
+      return projects.filter((project) => project.id === id)
+    }
   }
     

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
@@ -121,6 +121,12 @@ export class AuthController {
   @Get('/user-projects')
   getUserProjects(@Request() req) {
     return this.authService.getUserProjects(req.user.sub);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/project/:id')
+  getProject(@Param('id') id: number, @Request() req) {
+    return this.authService.getProject(req.user.sub, id);
   }
 
   @UseGuards(AuthGuard)
