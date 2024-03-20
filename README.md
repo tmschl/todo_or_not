@@ -7,7 +7,7 @@
 
 ### To run back-end
 
-`npm run start:dev // localhost:3025`
+`npm run start:dev --watch  // localhost:3025`
 
 ### To runt front-end
 
@@ -17,4 +17,8 @@
 
 #### Migrations
 
-When you change a table, go to package.json and name migration in `npm run migration:generate`. After generating you should run the migration `npm run migration:run` and also run `npm run build`.
+When you change, add, or delete a table, run migrations from package.json
+
+1. To name migration, add migraiton name at end of `npm run migration:generate` string: e.g. `npm run typeorm -- -d ./src/config/typeorm.ts migration:generate ./src/migrations/[add-migration-name-here]`.
+2. One generated, you should run the migration `npm run migration:run`
+3. Then, to polish, re:run `npm run build`.

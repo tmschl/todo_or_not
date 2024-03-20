@@ -5,11 +5,13 @@ import { JwtService } from '@nestjs/jwt';
 import { AccountDetailDto, Email } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
+import { ProjectsService } from 'src/projects/projects.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService, 
+    private projectsService: ProjectsService,
     private mailService: MailService,
     private jwtService: JwtService,
     ) {}
@@ -137,6 +139,23 @@ export class AuthService {
 
     async deleteUser(id: number) {
       return await this.usersService.deleteUser(id);
+    }
+
+    async createProject(name: string, description: string, userId: number) {
+      return await this.projectsService.createProject(name, description, userId);
+    }
+
+    async getUserProjects (userId: number) {
+      const user = await this.getProfileData(userId);
+      const projects = await this.projectsService.getUserProjects(userId);
+
+      console.log('user', user)
+      console.log('projects', projects)
+
+      return {
+        user,
+        projects,
+      }
     }
   }
     

@@ -1,7 +1,8 @@
-import { Accordion, AccordionItem, Textarea, AccordionButton, AccordionIcon, AccordionPanel, Box, FormControl, FormErrorMessage, FormLabel, Input, Button } from "@chakra-ui/react"
+import { Accordion, AccordionItem, Textarea, AccordionButton, AccordionIcon, AccordionPanel, Box, FormControl, FormErrorMessage, FormLabel, Input, Button, useToast } from "@chakra-ui/react"
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useState } from "react";
 import { Project } from "../../Pages/Projects";
+import axios from "axios";
 
 type Props = {
   projects: Project[];
@@ -9,30 +10,56 @@ type Props = {
 }
 
 const CreateProjectAccordion = ({projects, setProjects}: Props) => {
+
+  const toast = useToast();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [submitClickedName, setSubmitClickedName] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const isErrorName = name === "" && submitClickedName;
 
   const onSubmit = () => {
     setSubmitClickedName(true);
-    console.log('name', name);
-    console.log('description', description);
+    if (name !== "") {
+      setIsOpen(false)
 
-    // call create-project route on api to add project to database
+      const token = localStorage.getItem("token");
 
-    // on response, update projects state with list of projects returned from API
+      axios.post(
+        "http://localhost:3025/auth/create-project",
+        {
+          name,
+          description,
+        },
+        { headers: { Authorization: `Bearer ${token}`}}
+      ).then((response) => {
+        setProjects(response.data)
+        setName("");
+        setDescription("");
+        setSubmitClickedName(false);
 
-    setProjects([...projects, {
-      name,
-      description,
-      status: "To Do",
-    }]);
-  
-    setName("");
-    setDescription("");
-    setSubmitClickedName(false);
+        toast({
+          title: 'Success',
+          description: `Your project has been created!`,
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        })
+      }).catch((error) => {
+        console.log('error', error);
+
+        toast({
+          title: 'Error',
+          description: "There was an error creating your project. Please try again.",
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
+      })
+    } 
+
   }
 
   const onChangeName = (e: any) => {
@@ -45,12 +72,12 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
   };
 
   return (
-    <Accordion allowMultiple>
+    <Accordion allowToggle index={isOpen ? 0 : 1}>
       <AccordionItem border="1px solid">
         {({ isExpanded }) => (
           <>
             <h2>
-              <AccordionButton>
+              <AccordionButton onClick={() => setIsOpen(!isOpen)}>
 
                 {isExpanded ? (
                   <MinusIcon fontSize='12px' />
@@ -59,7 +86,7 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
                 )}
 
                 <Box as="span" flex='1' textAlign='left' ml={3}>
-                  Section 2 title
+                  Add a project
                 </Box>
               </AccordionButton>
             </h2>
@@ -68,7 +95,7 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
                 <FormLabel>Project Name:</FormLabel>
                 <Input type='text' value={name} onChange={onChangeName} />
                 {!isErrorName ? null :  (
-                  <FormErrorMessage>Username is required.</FormErrorMessage>
+                  <FormErrorMessage>Project name is required.</FormErrorMessage>
                 )}
               </FormControl>
               <FormControl mb={4}>

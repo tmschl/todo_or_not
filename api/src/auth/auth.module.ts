@@ -3,17 +3,15 @@ import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import jwt from 'src/config/jwt';
 import { MailService } from 'src/mail/mail.service';
+import { MailModule } from 'src/mail/mail.module';
+import { ProjectsModule } from 'src/projects/projects.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [jwt]
-    }),
     UsersModule,
+    ProjectsModule,
+    MailModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
