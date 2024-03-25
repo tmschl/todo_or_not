@@ -3,12 +3,14 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { Data } from "./Profile";
 import CreateProjectAccordion from "../Components/Projects/CreateProjectAccordion";
 import { useState } from "react";
+import { Feature } from "./Project";
 
 export type Project = {
   name: string;
   description?: string;
-  status: string;
   id: number;
+  status: string;
+  features: Feature[];
 }
 
 type LoaderData = {
@@ -21,8 +23,6 @@ const Projects = () => {
   const data = useLoaderData() as LoaderData;
   const user = data.user as Data;
   const [projects, setProjects] = useState(data.projects);
-
-  console.log(data.projects);
 
   const goToProject = (id: number) => {
     navigate(`/project/${id}`)

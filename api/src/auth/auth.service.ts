@@ -7,6 +7,7 @@ import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
 import { ProjectsService } from 'src/projects/projects.service';
 import { FeaturesService } from 'src/features/features.service';
+import { UserStoriesService } from 'src/userStories/userStories.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private usersService: UsersService, 
     private projectsService: ProjectsService,
     private featuresService: FeaturesService,
+    private userStoriesService: UserStoriesService,
     private mailService: MailService,
     private jwtService: JwtService,
     ) {}
@@ -173,6 +175,35 @@ export class AuthService {
         return await this.featuresService.createFeature(name, description, projectId);
       } else {
         throw new UnauthorizedException('project not found')
+      }
+    } 
+
+
+    async createUserStory(
+      name: string, 
+      description: string, 
+      userId: number, 
+      projectId: number, 
+      featureId: number,
+    ) {
+
+      console.log("FEATURE ID", featureId);
+
+      const projects = await this.projectsService.getUserProjects(userId);
+      const project = projects.find((project) => project.id === projectId);
+      const features = project.features;
+      const feature = features.find((feature) => feature.id === featureId);
+
+      console.log('FEATURE', feature);
+    
+      if (feature.id) {
+        return await this.userStoriesService.createUserStory(
+          name, 
+          description, 
+          featureId,
+        );
+      } else {
+        throw new UnauthorizedException('feature not found')
       }
     } 
   }

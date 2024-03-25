@@ -3,14 +3,16 @@ import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useState } from "react";
 import { Project } from "../../Pages/Projects";
 import axios from "axios";
+import { Feature } from "../../Pages/Project";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  projects: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  features: Feature[];
+  setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
+  projectId: number;
 }
 
-const CreateProjectAccordion = ({projects, setProjects}: Props) => {
+const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -29,21 +31,22 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
       const token = localStorage.getItem("token");
 
       axios.post(
-        "http://localhost:3025/auth/create-project",
+        "http://localhost:3025/auth/create-feature",
         {
           name,
           description,
+          projectId,
         },
         { headers: { Authorization: `Bearer ${token}`}}
       ).then((response) => {
-        setProjects(response.data)
+        setFeatures(response.data)
         setName("");
         setDescription("");
         setSubmitClickedName(false);
 
         toast({
           title: 'Success',
-          description: `Your project has been created!`,
+          description: `Your feature has been created!`,
           status: 'success',
           duration: 9000,
           isClosable: true,
@@ -69,7 +72,6 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
         }
       })
     } 
-
   }
 
   const onChangeName = (e: any) => {
@@ -96,24 +98,24 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
                 )}
 
                 <Box as="span" flex='1' textAlign='left' ml={3}>
-                  Add a project
+                  Add a feature
                 </Box>
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4} borderTop="1px solid">
               <FormControl isInvalid={isErrorName} isRequired mb={4}>
-                <FormLabel>Project Name:</FormLabel>
+                <FormLabel>Feature Name:</FormLabel>
                 <Input type='text' value={name} onChange={onChangeName} />
                 {!isErrorName ? null :  (
-                  <FormErrorMessage>Project name is required.</FormErrorMessage>
+                  <FormErrorMessage>Feature name is required.</FormErrorMessage>
                 )}
               </FormControl>
               <FormControl mb={4}>
-                <FormLabel>Description Name:</FormLabel>
+                <FormLabel>Feature Description:</FormLabel>
                 <Textarea value={description} onChange={onChangeDescription}/>
               </FormControl>
               <Button w="100%" onClick={onSubmit}>
-                Create Project
+                Create Feature
               </Button>
             </AccordionPanel>
           </>
@@ -123,4 +125,4 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
   )
 }
 
-export default CreateProjectAccordion;
+export default CreateFeatureAccordion;
