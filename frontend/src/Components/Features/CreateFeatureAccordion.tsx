@@ -8,11 +8,15 @@ import { useNavigate } from "react-router-dom";
 
 type Props = {
   features: Feature[];
-  setFeatures: React.Dispatch<React.SetStateAction<Feature[]>>;
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
   projectId: number;
 }
 
-const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
+const CreateFeatureAccordion = ({
+  features, 
+  setProject, 
+  projectId
+}: Props) => {
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -27,8 +31,9 @@ const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
     setSubmitClickedName(true);
     if (name !== "") {
       setIsOpen(false)
-
       const token = localStorage.getItem("token");
+
+
 
       axios.post(
         "http://localhost:3025/auth/create-feature",
@@ -39,7 +44,7 @@ const CreateFeatureAccordion = ({features, setFeatures, projectId}: Props) => {
         },
         { headers: { Authorization: `Bearer ${token}`}}
       ).then((response) => {
-        setFeatures(response.data)
+        setProject(response.data)
         setName("");
         setDescription("");
         setSubmitClickedName(false);

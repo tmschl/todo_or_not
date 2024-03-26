@@ -1,24 +1,27 @@
-import { Accordion, AccordionItem, Textarea, AccordionButton, AccordionIcon, AccordionPanel, Box, FormControl, FormErrorMessage, FormLabel, Input, Button, useToast } from "@chakra-ui/react"
+import { Accordion, AccordionItem, AccordionButton, AccordionPanel, Box, FormControl, FormErrorMessage, FormLabel, Input, Button, useToast } from "@chakra-ui/react"
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useState } from "react";
 import axios from "axios";
-import { UserStory } from "../Features/FeatureModal";
 import { useNavigate } from "react-router-dom";
 import { Project } from "../../Pages/Projects";
 
 type Props = {
   featureId: number;
   projectId: number;
+  userStoryId: number;
   setProject: React.Dispatch<React.SetStateAction<Project>>;
 }
 
 
+// REFACTOR: useContext instead
 
-const CreateUserStoryAccordion = ({
+const CreateTaskAccordion = ({
   projectId, 
   featureId,
+  userStoryId,
   setProject,
 }: Props) => {
+
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -33,27 +36,26 @@ const CreateUserStoryAccordion = ({
     setSubmitClickedName(true);
     if (name !== "") {
       setIsOpen(false)
-
       const token = localStorage.getItem("token");
 
       axios.post(
-        "http://localhost:3025/auth/create-user-story",
+        "http://localhost:3025/auth/create-task",
         {
           name,
-          description,
           projectId,
           featureId,
+          userStoryId,
         },
         { headers: { Authorization: `Bearer ${token}`}}
       ).then((response) => {
+        console.log('project', response.data);
         setProject(response.data)
         setName("");
-        setDescription("");
         setSubmitClickedName(false);
 
         toast({
           title: 'Success',
-          description: `Your feature has been created!`,
+          description: `Your task has been created!`,
           status: 'success',
           duration: 9000,
           isClosable: true,
@@ -71,7 +73,7 @@ const CreateUserStoryAccordion = ({
         } else {
           toast({
             title: 'Error',
-            description: "There was an error creating your feature. Please try again.",
+            description: "There was an error creating your developer task. Please try again.",
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -85,10 +87,6 @@ const CreateUserStoryAccordion = ({
   const onChangeName = (e: any) => {
     setSubmitClickedName(false);
     setName(e.target.value);
-  };
-
-  const onChangeDescription = (e: any) => {
-    setDescription(e.target.value);
   };
 
   return (
@@ -106,24 +104,20 @@ const CreateUserStoryAccordion = ({
                 )}
 
                 <Box as="span" flex='1' textAlign='left' ml={3}>
-                  Add a User Story
+                  Add a task
                 </Box>
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4} borderTop="1px solid">
               <FormControl isInvalid={isErrorName} isRequired mb={4}>
-                <FormLabel>User Story Name:</FormLabel>
+                <FormLabel>Task Name:</FormLabel>
                 <Input type='text' value={name} onChange={onChangeName} />
                 {!isErrorName ? null :  (
-                  <FormErrorMessage>User story name is required.</FormErrorMessage>
+                  <FormErrorMessage>Developer Task name is required.</FormErrorMessage>
                 )}
               </FormControl>
-              <FormControl mb={4}>
-                <FormLabel>User Story Description:</FormLabel>
-                <Textarea value={description} onChange={onChangeDescription}/>
-              </FormControl>
               <Button w="100%" onClick={onSubmit}>
-                Create User Story 
+                Create Task
               </Button>
             </AccordionPanel>
           </>
@@ -133,4 +127,4 @@ const CreateUserStoryAccordion = ({
   )
 }
 
-export default CreateUserStoryAccordion;
+export default CreateTaskAccordion;

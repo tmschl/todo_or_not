@@ -4,6 +4,7 @@ import { Project as ProjectType } from "./Projects";
 import CreateFeatureAccordion from "../Components/Features/CreateFeatureAccordion";
 import { useState } from "react";
 import FeatureModal, { UserStory } from "../Components/Features/FeatureModal";
+import FeatureBox from "../Components/Features/FeatureBox";
 
 export type Feature = {
   name: string;
@@ -26,14 +27,9 @@ const columns = [
 ];
 
 const Project = () => {
-  // take this logic out of this component
-  const data = useLoaderData() as ProjectType;
-  const project = data[0];
-  
-  const [features, setFeatures] = useState(project.features);
+  const loaderData = useLoaderData() as ProjectType;
+  const [project, setProject] = useState(loaderData);
   const { isOpen, onOpen, onClose } = useDisclosure()
-  
-  const [selectedFeature, setSelectedFeature] = useState(features[0]);
 
   return (
     <Box m={10} >
@@ -47,37 +43,20 @@ const Project = () => {
       <Box display="flex" gap={10}>
         {columns.map((column) => {
           return (
-            <Box border="1px" flex={1}>
+            <Box border="1px" flex={1} key={column.name}>
               <Text textAlign="center" fontSize={20} mt={2}> 
                 { column.name }
               </Text>
-              {features.map((feature) => {
+              {project.features.map((feature) => {
+                feature.status = "To Do";
                 if (column.name === feature.status) {
                   return (
-                    <Box 
-                      border="1px" 
-                      p={4} 
-                      mx={4} 
-                      mt={4}
-                      display="flex" 
-                      justifyContent="space-between"
-                      onClick={() => {
-                        onOpen();
-                        setSelectedFeature(feature);
-                      }}
-                      _hover={{
-                        background: "gray.50",
-                        color: "gray.500",
-                      }}
-                    >
-                      <Text>
-                        {feature.name}
-                      </Text>
-                      <Text>
-                        {feature.completedUserStories} / {feature.userStoryCount}
-                      </Text>
-                    </Box>
-                    );
+                    <FeatureBox 
+                      feature={feature} 
+                      projectId={project.id}
+                      setProject={setProject}
+                    />
+                  );
                 } else {
                   return null;
                 }
@@ -85,9 +64,9 @@ const Project = () => {
               <Box p={4}>
                 {column.name === "To Do" && (
                   <CreateFeatureAccordion 
-                  features={features}
-                  setFeatures={setFeatures}
-                  projectId={project.id}
+                    features={project.features}
+                    setProject={setProject}
+                    projectId={project.id}
                   />
                 )}
               </Box>
@@ -95,15 +74,6 @@ const Project = () => {
           )
         })}
       </Box>
-      <FeatureModal 
-        isOpen={isOpen} 
-        onClose={onClose} 
-        featureName={selectedFeature.name} 
-        featureDesscription={selectedFeature.description || "There is no description..." } 
-        featureId={selectedFeature.id} 
-        projectId={project.id}
-        stories={selectedFeature.userStories}
-      />
     </Box>
   )
 }

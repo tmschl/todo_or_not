@@ -13,7 +13,22 @@ export class ProjectsService {
   async getUserProjects(id: number) {
     return await this.projectsRepository.find({ 
       where: { user: { id }}, 
-      relations: ['features', 'features.userStories'],
+      order: {
+        features: {
+          id: "ASC",
+          userStories: {
+            id: "ASC",
+            tasks: {
+              id: 'ASC',
+            }
+          }
+        }
+      },
+      relations: [
+        'features', 
+        'features.userStories', 
+        'features.userStories.tasks'
+      ],
     })
   }
 
@@ -28,4 +43,28 @@ export class ProjectsService {
 
     return await this.getUserProjects(userId);
   };
+
+  async getProjectById(id: number) {
+    return await this.projectsRepository.findOne({ 
+      where: { id },
+      order: {
+        features: {
+          id: "ASC",
+          userStories: {
+            id: "ASC",
+            tasks: {
+              id: 'ASC',
+            }
+          }
+        }
+      },
+      relations: [
+        'features', 
+        'features.userStories', 
+        'features.userStories.tasks'
+      ],
+    })
+  }
+
+
 }

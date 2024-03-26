@@ -1,7 +1,7 @@
 import { Box, Text,  Modal, ModalOverlay, ModalContent,  ModalCloseButton, } from "@chakra-ui/react";
-import UserStoryDetailsAccordion from "../UserStories/UserStoryDetailsAccordion";
-import { useEffect, useState } from "react";
+import UserStoryDetailsAccordion, { Task } from "../UserStories/UserStoryDetailsAccordion";
 import CreateUserStoryAccordion from "../UserStories/CreateUserStoryAccordion";
+import { Project } from "../../Pages/Projects";
 
 type Props = {
   isOpen: boolean;
@@ -11,12 +11,15 @@ type Props = {
   featureId: number;
   projectId: number;
   stories: UserStory[];
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
 }
 
 export type UserStory = {
   name: string;
   description: string;
   status: string;
+  id: number;
+  tasks: Task[];
 }
 
 
@@ -28,13 +31,8 @@ const FeatureModal = ({
   featureId, 
   projectId,
   stories,
+  setProject,
 }: Props ) => {
-  const [userStories, setUserStories] = useState(stories)
-
-  useEffect(() => {
-    setUserStories(stories);
-  }, [stories])
-
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
@@ -49,20 +47,25 @@ const FeatureModal = ({
           <ModalCloseButton />
 
           <Box display="flex" flexDirection="column" gap={4}>
-            {userStories.map((story, index) => {
+            {stories.map((story, index) => {
               return (
                 <UserStoryDetailsAccordion 
                   name={story.name} 
                   status={story.status}
                   description={story.description}
+                  featureId={featureId}
+                  projectId={projectId}
+                  userStoryId={story.id}
+                  tasks={story.tasks}
+                  key={story.id}
+                  setProject={setProject}
                 /> 
               )
             })}
-            <CreateUserStoryAccordion 
-              userStories={userStories} 
-              setUserStories={setUserStories} 
+            <CreateUserStoryAccordion
               featureId={featureId} 
               projectId={projectId}
+              setProject={setProject}
             />
           </Box>
         </Box>

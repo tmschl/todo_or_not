@@ -37,10 +37,13 @@ const Projects = () => {
         {
           projects.map((project) => {
             return (
-              <Box display="flex" mb={6} border="1px solid" p={4} 
+              <Box display="flex" 
+                mb={6} border="1px solid" 
+                p={4} 
                 onClick={() => {goToProject(project.id)}}
-                _hover={{ cursor: "pointer", backgroundColor: "gray.100" }}>
-
+                _hover={{ cursor: "pointer", backgroundColor: "gray.100" }}
+                key={project.id}
+              >
                 <Text w="15%">{project.name}</Text>
                 <Text noOfLines={1} flex={1}>{project.description}</Text>
                 <Text w="15%" ml={10}>{project.status}</Text>
