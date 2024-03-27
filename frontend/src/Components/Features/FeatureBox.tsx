@@ -11,6 +11,8 @@ type Props = {
 
 const FeatureBox = ({feature, projectId, setProject}: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  console.log('feature box', feature);
+
   return (
     <>
       <Box 

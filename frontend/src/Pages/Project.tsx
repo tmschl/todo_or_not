@@ -29,7 +29,8 @@ const columns = [
 const Project = () => {
   const loaderData = useLoaderData() as ProjectType;
   const [project, setProject] = useState(loaderData);
-  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  console.log('project', project);
 
   return (
     <Box m={10} >
@@ -48,7 +49,7 @@ const Project = () => {
                 { column.name }
               </Text>
               {project.features.map((feature) => {
-                feature.status = "To Do";
+                // feature.status = "To Do";
                 if (column.name === feature.status) {
                   return (
                     <FeatureBox 

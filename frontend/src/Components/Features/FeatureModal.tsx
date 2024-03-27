@@ -17,9 +17,10 @@ type Props = {
 export type UserStory = {
   name: string;
   description: string;
-  status: string;
   id: number;
   tasks: Task[];
+  completedTasks: number;
+  taskCount: number;
 }
 
 
@@ -51,7 +52,7 @@ const FeatureModal = ({
               return (
                 <UserStoryDetailsAccordion 
                   name={story.name} 
-                  status={story.status}
+                  status={`${story.completedTasks} / ${story.taskCount}`}
                   description={story.description}
                   featureId={featureId}
                   projectId={projectId}

@@ -46,7 +46,9 @@ const Projects = () => {
               >
                 <Text w="15%">{project.name}</Text>
                 <Text noOfLines={1} flex={1}>{project.description}</Text>
-                <Text w="15%" ml={10}>{project.status}</Text>
+                <Text w="15%" ml={10}>
+                  {project.status}
+                </Text>
               </Box>
             )
           })
