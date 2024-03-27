@@ -19,6 +19,20 @@ export class UserStoriesService {
     })
   }
 
+  async getUserStoryStatusById(id: number) {
+    const userStory = await this.userStoriesRepository.findOne({
+      where: { id }, 
+      relations: ['tasks']
+    })
+
+    const tasks = userStory.tasks;
+    const taskCount = tasks.length;
+    const completedTasks = tasks.filter((task) => task.status === 'Done!');
+    const completedTasksLength = completedTasks.length;
+
+    return `${completedTasksLength} / ${taskCount}`;
+  }
+
   async createUserStory(name: string, description: string, featureId: number) {
     await this.userStoriesRepository.save({
       name, 

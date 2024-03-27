@@ -39,7 +39,6 @@ const ResetPassword = () => {
         token,
       })
       .then((response) => {
-        console.log('response', response.data);
         setPassword("");
         setSecondPassword("");
         navigate('/log-in');

@@ -30,7 +30,6 @@ const Project = () => {
   const loaderData = useLoaderData() as ProjectType;
   const [project, setProject] = useState(loaderData);
 
-  console.log('project', project);
 
   return (
     <Box m={10} >

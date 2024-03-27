@@ -48,7 +48,6 @@ const CreateTaskAccordion = ({
         },
         { headers: { Authorization: `Bearer ${token}`}}
       ).then((response) => {
-        console.log('project', response.data);
         setProject(response.data)
         setName("");
         setSubmitClickedName(false);

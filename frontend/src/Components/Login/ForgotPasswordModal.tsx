@@ -18,9 +18,8 @@ const ForgotPasswordModal = ({isOpen, onClose }: Props) => {
   }
 
   const submitEmail = () => {
-    console.log("email", email);
-
     const invalidEmail = isInvalidEmail(email);
+    
     if (invalidEmail) {
       toast({
         title: 'Error',
@@ -37,7 +36,6 @@ const ForgotPasswordModal = ({isOpen, onClose }: Props) => {
       })
       .then((response) => {
         setEmail("");
-        console.log('response', response.data);
         toast({
           title: 'Success',
           description: "Check your email account for further directions.",

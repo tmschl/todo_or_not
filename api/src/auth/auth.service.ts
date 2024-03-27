@@ -216,6 +216,7 @@ export class AuthService {
       featureId: number,
       userStoryId: number,
     ) {
+      // refactor with typeorm
       const projects = await this.projectsService.getUserProjects(userId);
       const project = projects.find((project) => project.id === projectId);
 
@@ -242,7 +243,12 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Unauthorized')
     } 
+  }
 
+  async updateTask(field: string, value: string, userId: number, taskId: number) {
+    const userStoryId= await this.tasksService.updateTask(field, value, userId, taskId);
+
+    return await this.userStoriesService.getUserStoryStatusById(userStoryId);
   }
 }
     
