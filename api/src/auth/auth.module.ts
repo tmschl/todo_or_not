@@ -6,11 +6,17 @@ import { JwtModule } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { MailModule } from 'src/mail/mail.module';
 import { ProjectsModule } from 'src/projects/projects.module';
+import { FeaturesModule } from 'src/features/features.module';
+import { UserStoriesModule } from 'src/userStories/userStories.module';
+import { TasksServiceModule } from 'src/tasks/tasks.module';
 
 @Module({
   imports: [
     UsersModule,
     ProjectsModule,
+    FeaturesModule,
+    UserStoriesModule,
+    TasksServiceModule,
     MailModule,
     JwtModule.register({
       global: true,

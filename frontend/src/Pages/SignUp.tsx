@@ -73,7 +73,6 @@ const SignUp = () => {
   }
 
   const onSubmit = () => {
-    console.log(name, email, username, password);
     setSubmitClickedName(true);
     setSubmitClickedEmail(true);
     setSubmitClickedUsername(true);
@@ -97,7 +96,6 @@ const SignUp = () => {
           username,
           password,
         }).then((response) => {
-          console.log("RESPONSE", response);
           const token = response.data;
           context.toggleLoggedIn();
           localStorage.setItem("token", token);
@@ -121,7 +119,6 @@ const SignUp = () => {
             isClosable: true,
           })
       }).catch((error) => {
-          console.log('err', error);
           setName('');
           setEmail('');
           setUsername('');
@@ -132,7 +129,6 @@ const SignUp = () => {
           setSubmitClickedUsername(false);
           setSubmitClickedPassword(false);
           setSubmitClickedSecondPassword(false);
-          console.log('ERROR', error)
           toast({
             title: 'Error',
             description: "There was an error",

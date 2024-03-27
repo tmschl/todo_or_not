@@ -1,15 +1,14 @@
 import { Feature } from 'src/features/entities/feature.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Task } from 'src/tasks/entities/tasks.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
-export class Project {
+export class UserStory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // user id foreign key
-  @ManyToOne(() => User, (user) => user.projects)
-  user: User
+  @ManyToOne(() => Feature, (feature) => feature.userStories)
+  feature: Feature; 
 
   @Column()
   name: string;
@@ -17,7 +16,6 @@ export class Project {
   @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Feature, (feature) => feature.project)
-  features: Feature[];
-
+  @OneToMany(() => Task, (task) => task.userStory)
+  tasks: Task[];
 }

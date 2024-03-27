@@ -6,12 +6,18 @@ import { AccountDetailDto, Email } from './auth.controller';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
 import { ProjectsService } from 'src/projects/projects.service';
+import { FeaturesService } from 'src/features/features.service';
+import { UserStoriesService } from 'src/userStories/userStories.service';
+import { TasksService } from 'src/tasks/tasks.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService, 
     private projectsService: ProjectsService,
+    private featuresService: FeaturesService,
+    private userStoriesService: UserStoriesService,
+    private tasksService: TasksService,
     private mailService: MailService,
     private jwtService: JwtService,
     ) {}
@@ -149,13 +155,94 @@ export class AuthService {
       const user = await this.getProfileData(userId);
       const projects = await this.projectsService.getUserProjects(userId);
 
-      console.log('user', user)
-      console.log('projects', projects)
-
       return {
         user,
         projects,
       }
     }
+
+    async getProject(userId: number, id: number) {
+      const projects = await this.projectsService.getUserProjects(userId)
+      return projects.find((project) => project.id === id)
+    }
+
+    async createFeature(name: string, description: string, userId: number, projectId: number) {
+      const projects = await this.projectsService.getUserProjects(userId);
+      const project = projects.find((project) => project.id === projectId);
+    
+      if (project) {
+        await this.featuresService.createFeature(name, description, projectId);
+        return await this.projectsService.getProjectById(projectId);
+      } else {
+        throw new UnauthorizedException('Unauthorized')
+      }
+    } 
+
+
+    async createUserStory(
+      name: string, 
+      description: string, 
+      userId: number, 
+      projectId: number, 
+      featureId: number,
+    ) {
+      const projects = await this.projectsService.getUserProjects(userId);
+      const project = projects.find((project) => project.id === projectId);
+
+      if (project) {
+        const features = project.features;
+        const feature = features.find((feature) => feature.id === featureId);
+
+        if (feature) {
+          await this.userStoriesService.createUserStory(
+            name, 
+            description, 
+            featureId,
+          );
+          return await this.projectsService.getProjectById(projectId);
+        } else {
+          throw new UnauthorizedException('Unauthorized');
+        }
+      } else {
+        throw new UnauthorizedException('Unauthorized!');
+      }
+    } 
+
+  
+    async createTask(
+      name: string, 
+      userId: number, 
+      projectId: number, 
+      featureId: number,
+      userStoryId: number,
+    ) {
+      const projects = await this.projectsService.getUserProjects(userId);
+      const project = projects.find((project) => project.id === projectId);
+
+      if (project) {
+        const features = project.features;
+        const feature = features.find((feature) => feature.id === featureId);
+        
+        if (feature) {
+          const userStories = feature.userStories;
+          const userStory = userStories.find((story) => story.id === userStoryId);
+    
+          if (userStory) {
+            await this.tasksService.createTask(
+              name, 
+              userStoryId,
+            );
+            return await this.projectsService.getProjectById(projectId);
+          } else {
+            throw new UnauthorizedException('user story not found')
+          }
+        } else {
+          throw new UnauthorizedException('Unauthorized')
+        }
+    } else {
+      throw new UnauthorizedException('Unauthorized')
+    } 
+
   }
+}
     

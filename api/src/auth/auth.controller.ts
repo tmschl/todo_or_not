@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
@@ -73,6 +73,57 @@ export class ProjectDto {
   description: string;
 }
 
+
+export class FeatureDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
+
+  @IsOptional()
+  @Transform((params) => sanitizeHtml(params.value))
+  description: string;
+
+  @IsNotEmpty()
+  projectId: number;
+}
+
+export class UserStoryDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
+
+  @IsOptional()
+  @Transform((params) => sanitizeHtml(params.value))
+  description: string;
+
+  @IsNotEmpty()
+  projectId: number;
+
+  @IsNotEmpty()
+  featureId: number;
+
+}
+
+export class TaskDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  name: string;
+
+  @IsOptional()
+  @Transform((params) => sanitizeHtml(params.value))
+  description: string;
+
+  @IsNotEmpty()
+  projectId: number;
+
+  @IsNotEmpty()
+  featureId: number;
+
+  @IsNotEmpty()
+  userStoryId: number;
+
+}
+
 @Controller('auth')
 export class AuthController {
   constructor( private readonly authService: AuthService ) {}
@@ -124,10 +175,54 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('/project/:id')
+  getProject(@Param('id') id: number, @Request() req) {
+    return this.authService.getProject(req.user.sub, id);
+  }
+
+  @UseGuards(AuthGuard)
   @Post('create-project')
   createProject(@Body() projectDto: ProjectDto, @Request() req) {
     console.log('project info' , projectDto)
     console.log('req', req.user.sub)
     return this.authService.createProject(projectDto.name, projectDto.description, req.user.sub);
   }
+
+
+  @UseGuards(AuthGuard)
+  @Post('create-feature')
+  createFeature(@Body() featureDto: FeatureDto, @Request() req) {
+    return this.authService.createFeature(
+      featureDto.name, 
+      featureDto.description, 
+      req.user.sub,
+      featureDto.projectId, 
+    );
+  }
+  @UseGuards(AuthGuard)
+  @Post('create-task')
+  createTask(@Body() taskDto: TaskDto, @Request() req) {
+    console.log('TASK DTO', taskDto, req.user.sub);
+
+    return this.authService.createTask(
+      taskDto.name,
+      req.user.sub,
+      taskDto.projectId,
+      taskDto.featureId,
+      taskDto.userStoryId,
+    )
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('create-user-story')
+  createUserStory(@Body() userStoryDto: UserStoryDto, @Request() req) {
+    return this.authService.createUserStory(
+      userStoryDto.name, 
+      userStoryDto.description, 
+      req.user.sub,
+      userStoryDto.projectId, 
+      userStoryDto.featureId,
+    );
+  }
+
 }

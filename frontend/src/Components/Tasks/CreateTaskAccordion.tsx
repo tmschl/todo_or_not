@@ -1,16 +1,27 @@
-import { Accordion, AccordionItem, Textarea, AccordionButton, AccordionIcon, AccordionPanel, Box, FormControl, FormErrorMessage, FormLabel, Input, Button, useToast } from "@chakra-ui/react"
+import { Accordion, AccordionItem, AccordionButton, AccordionPanel, Box, FormControl, FormErrorMessage, FormLabel, Input, Button, useToast } from "@chakra-ui/react"
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useState } from "react";
-import { Project } from "../../Pages/Projects";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Project } from "../../Pages/Projects";
 
 type Props = {
-  projects: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  featureId: number;
+  projectId: number;
+  userStoryId: number;
+  setProject: React.Dispatch<React.SetStateAction<Project>>;
 }
 
-const CreateProjectAccordion = ({projects, setProjects}: Props) => {
+
+// REFACTOR: useContext instead
+
+const CreateTaskAccordion = ({
+  projectId, 
+  featureId,
+  userStoryId,
+  setProject,
+}: Props) => {
+
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -25,25 +36,26 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
     setSubmitClickedName(true);
     if (name !== "") {
       setIsOpen(false)
-
       const token = localStorage.getItem("token");
 
       axios.post(
-        "http://localhost:3025/auth/create-project",
+        "http://localhost:3025/auth/create-task",
         {
           name,
-          description,
+          projectId,
+          featureId,
+          userStoryId,
         },
         { headers: { Authorization: `Bearer ${token}`}}
       ).then((response) => {
-        setProjects(response.data)
+        console.log('project', response.data);
+        setProject(response.data)
         setName("");
-        setDescription("");
         setSubmitClickedName(false);
 
         toast({
           title: 'Success',
-          description: `Your project has been created!`,
+          description: `Your task has been created!`,
           status: 'success',
           duration: 9000,
           isClosable: true,
@@ -61,7 +73,7 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
         } else {
           toast({
             title: 'Error',
-            description: "There was an error creating your feature. Please try again.",
+            description: "There was an error creating your developer task. Please try again.",
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -75,10 +87,6 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
   const onChangeName = (e: any) => {
     setSubmitClickedName(false);
     setName(e.target.value);
-  };
-
-  const onChangeDescription = (e: any) => {
-    setDescription(e.target.value);
   };
 
   return (
@@ -96,24 +104,20 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
                 )}
 
                 <Box as="span" flex='1' textAlign='left' ml={3}>
-                  Add a project
+                  Add a task
                 </Box>
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4} borderTop="1px solid">
               <FormControl isInvalid={isErrorName} isRequired mb={4}>
-                <FormLabel>Project Name:</FormLabel>
+                <FormLabel>Task Name:</FormLabel>
                 <Input type='text' value={name} onChange={onChangeName} />
                 {!isErrorName ? null :  (
-                  <FormErrorMessage>Project name is required.</FormErrorMessage>
+                  <FormErrorMessage>Developer Task name is required.</FormErrorMessage>
                 )}
               </FormControl>
-              <FormControl mb={4}>
-                <FormLabel>Description Name:</FormLabel>
-                <Textarea value={description} onChange={onChangeDescription}/>
-              </FormControl>
               <Button w="100%" onClick={onSubmit}>
-                Create Project
+                Create Task
               </Button>
             </AccordionPanel>
           </>
@@ -123,4 +127,4 @@ const CreateProjectAccordion = ({projects, setProjects}: Props) => {
   )
 }
 
-export default CreateProjectAccordion;
+export default CreateTaskAccordion;
