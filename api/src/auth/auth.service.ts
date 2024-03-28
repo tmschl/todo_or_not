@@ -101,7 +101,6 @@ export class AuthService {
         );
         
         if (accountDetailDto.field === 'password') {
-          console.log('made it to password', accountDetailDto.value)
           const plainTestPassword = accountDetailDto.value;
           const hashedPassword =  await this.hashPassword(plainTestPassword);
           user[accountDetailDto.field] = hashedPassword;
@@ -160,16 +159,16 @@ export class AuthService {
         projects,
       }
     }
-
+    
     async getProject(userId: number, id: number) {
       const projects = await this.projectsService.getUserProjects(userId)
       return projects.find((project) => project.id === id)
     }
-
+    
     async createFeature(name: string, description: string, userId: number, projectId: number) {
       const projects = await this.projectsService.getUserProjects(userId);
       const project = projects.find((project) => project.id === projectId);
-    
+      
       if (project) {
         await this.featuresService.createFeature(name, description, projectId);
         return await this.projectsService.getProjectById(projectId);
@@ -177,7 +176,22 @@ export class AuthService {
         throw new UnauthorizedException('Unauthorized')
       }
     } 
-
+    
+    async updateUserStory(
+      field: string, 
+      value: string, 
+      userId: number, 
+      userStoryId: number
+    ) {
+      const projectId = await this.userStoriesService.updateUserStory(
+        field, 
+        value, 
+        userId, 
+        userStoryId
+      )
+  
+      return await this.projectsService.getProjectById(projectId);
+    }
 
     async createUserStory(
       name: string, 

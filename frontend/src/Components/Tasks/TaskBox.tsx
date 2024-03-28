@@ -113,7 +113,7 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
 
       <Box flex={1}>
         {updateName ? (
-          <Input flex={1} h="38px" value={taskName} onChange={onChange} type="text" />
+          <Input flex={1} h="40px" value={taskName} onChange={onChange} type="text" />
         ) : (
           <Text flex={1}>{task.name}</Text>
         )}

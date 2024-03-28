@@ -13,7 +13,6 @@ type Props = {
 }
 
 const UserDetailsRow = ({ field, value, username, setData }: Props) => {
-  console.log('value', value);
   const toast = useToast();
 
   const [updateField, setUpdateField] = useState(false);

@@ -43,11 +43,9 @@ export class TasksService {
     if (taskToUpdate) {
       taskToUpdate[field] = value;
       await this.tasksRepository.save(taskToUpdate);
-      console.log('user story', taskToUpdate.userStory);
       return taskToUpdate.userStory.id;
     } else {
       throw new BadRequestException('you cannot edit that task')
     }
-
   }
 }

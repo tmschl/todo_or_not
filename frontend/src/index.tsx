@@ -138,7 +138,6 @@ const router = createBrowserRouter([
               })
               return redirect("/projects")
             }
-            console.log('loader response', response.data)
             return response.data;
           } catch (error) {
             toast({
