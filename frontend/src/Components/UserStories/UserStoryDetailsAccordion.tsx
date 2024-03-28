@@ -42,16 +42,24 @@ const UserStoryDetailsAccordion = ({
   const [storyStatus, setStoryStatus] = useState(status); 
   const [updateStoryName, setUpdateStoryName] = useState(false);
   const [storyName, setStoryName] = useState(name);
+  const [updateStoryDescription, setUpdateStoryDescription] = useState(false);
+  const [storyDescription, setStoryDescription] = useState(description);
 
-  const onChange = (e: any) => {
+  const onChangeName = (e: any) => {
     setStoryName(e.target.value);
   }
 
-  const onClickEdit = () => {
+  const onChangeDescription = (e: any) => {
+    setStoryDescription(e.target.value);
+  }
+
+  const onClickEditName = () => {
     setUpdateStoryName(!updateStoryName);
   }
 
-
+  const onClickEditDescription = () => {
+    setUpdateStoryDescription(!updateStoryDescription);
+  }
 
   const updateStory = (field: "name" | "description", value: string) => {
     if (storyName === "") {
@@ -80,6 +88,7 @@ const UserStoryDetailsAccordion = ({
     ).then((response) => {
       setProject(response.data);
       setUpdateStoryName(false);
+      setUpdateStoryDescription(false);
 
       toast({
         title: 'Success',
@@ -124,7 +133,7 @@ const UserStoryDetailsAccordion = ({
     {updateStoryName ? (
         <Box display="flex" p={4} border="1px" alignItems="center">
           <Box flex={1} mr={4}>
-            <Input flex={1} h="40px" value={storyName} onChange={onChange} type="text" />
+            <Input h="40px" value={storyName} onChange={onChangeName} type="text" />
           </Box>
           <IconButton 
             mr={4}
@@ -134,7 +143,7 @@ const UserStoryDetailsAccordion = ({
             onClick={() => {updateStory("name", storyName)}}
           />
           <Text>{storyStatus}</Text>
-          <ChevronDownIcon />
+          <ChevronDownIcon boxSize={5}/>
         </Box>
       )
         : 
@@ -142,7 +151,11 @@ const UserStoryDetailsAccordion = ({
         <Accordion allowToggle>
           <AccordionItem border="1px">
             <h2>
-              <AccordionButton display="flex" justifyContent="space-between" p={4}>
+              <AccordionButton 
+                display="flex" 
+                justifyContent="space-between" 
+                p={4}
+              >
                 <Text flex={1} textAlign="left">
                   {name}
                 </Text>
@@ -151,7 +164,7 @@ const UserStoryDetailsAccordion = ({
                   aria-label='Edit Name' 
                   icon={<EditIcon/>} 
                   size="md" 
-                  onClick={onClickEdit}
+                  onClick={onClickEditName}
                 />
                 <Text> 
                   {storyStatus} 
@@ -160,8 +173,26 @@ const UserStoryDetailsAccordion = ({
               </AccordionButton>
             </h2>
             <AccordionPanel p={0} borderTop="1px">
-              <Box p={4}>
-                {description}
+              <Box display="flex" p={4} py={10} alignItems="center">
+                { updateStoryDescription ? (
+                  <Box flex={1} mr={4}>
+                    <Input h="40px" value={storyDescription} onChange={onChangeDescription} type="text" />
+                  </Box>
+                ) : (
+                  <Box flex={1}>
+                    {description}
+                  </Box>
+                )}
+                <IconButton 
+                  mr={4}
+                  aria-label='Edit Name' 
+                  icon={updateStoryDescription ? <CheckIcon /> : <EditIcon/> } 
+                  size="md" 
+                  onClick={updateStoryDescription ? () => {
+                      updateStory("description", storyDescription)
+                    } : onClickEditDescription 
+                  }
+                /> 
               </Box>
               {tasks.map((task) => {
                 return ( <TaskBox task={task} setStoryStatus={setStoryStatus} /> )
