@@ -101,7 +101,6 @@ export class AuthService {
         );
         
         if (accountDetailDto.field === 'password') {
-          console.log('made it to password', accountDetailDto.value)
           const plainTestPassword = accountDetailDto.value;
           const hashedPassword =  await this.hashPassword(plainTestPassword);
           user[accountDetailDto.field] = hashedPassword;
@@ -160,16 +159,16 @@ export class AuthService {
         projects,
       }
     }
-
+    
     async getProject(userId: number, id: number) {
       const projects = await this.projectsService.getUserProjects(userId)
       return projects.find((project) => project.id === id)
     }
-
+    
     async createFeature(name: string, description: string, userId: number, projectId: number) {
       const projects = await this.projectsService.getUserProjects(userId);
       const project = projects.find((project) => project.id === projectId);
-    
+      
       if (project) {
         await this.featuresService.createFeature(name, description, projectId);
         return await this.projectsService.getProjectById(projectId);
@@ -177,7 +176,22 @@ export class AuthService {
         throw new UnauthorizedException('Unauthorized')
       }
     } 
-
+    
+    async updateUserStory(
+      field: string, 
+      value: string, 
+      userId: number, 
+      userStoryId: number
+    ) {
+      const projectId = await this.userStoriesService.updateUserStory(
+        field, 
+        value, 
+        userId, 
+        userStoryId
+      )
+  
+      return await this.projectsService.getProjectById(projectId);
+    }
 
     async createUserStory(
       name: string, 
@@ -216,6 +230,7 @@ export class AuthService {
       featureId: number,
       userStoryId: number,
     ) {
+      // refactor with typeorm
       const projects = await this.projectsService.getUserProjects(userId);
       const project = projects.find((project) => project.id === projectId);
 
@@ -242,7 +257,44 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Unauthorized')
     } 
-
   }
+
+  async updateTask(field: string, value: string, userId: number, taskId: number) {
+    const userStoryId= await this.tasksService.updateTask(field, value, userId, taskId);
+
+    return await this.userStoriesService.getUserStoryStatusById(userStoryId);
+  }
+
+  async updateFeature(
+    field: string, 
+    value: string, 
+    userId: number, 
+    featureId: number,
+  ) {
+    const projectId = await this.featuresService.updateFeature(
+      field, 
+      value, 
+      userId, 
+      featureId, 
+    )
+
+    return await this.projectsService.getProjectById(projectId);
+  }
+
+
+  async updateProject(
+    field: string, 
+    value: string, 
+    userId: number, 
+    projectId: number,
+  ) {
+    return await this.projectsService.updateProject(
+      field, 
+      value, 
+      userId, 
+      projectId, 
+    )
+  }
+
 }
     

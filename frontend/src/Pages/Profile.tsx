@@ -42,7 +42,6 @@ const Profile = () => {
       headers: { Authorization: `Bearer ${token}` }
     }).then((response) => {
       localStorage.removeItem(token);
-      console.log(response);
       navigate('/sign-up');
       toast({
         title: 'Success',

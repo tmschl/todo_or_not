@@ -108,11 +108,7 @@ export class TaskDto {
   @IsNotEmpty()
   @Transform((params) => sanitizeHtml(params.value))
   name: string;
-
-  @IsOptional()
-  @Transform((params) => sanitizeHtml(params.value))
-  description: string;
-
+  
   @IsNotEmpty()
   projectId: number;
 
@@ -121,7 +117,57 @@ export class TaskDto {
 
   @IsNotEmpty()
   userStoryId: number;
+}
 
+
+export class UpdateTaskDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  field: string;
+
+  // @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  taskId: number;
+}
+
+export class UpdateUserStoryDto {
+  @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  field: string;
+
+  // @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  userStoryId: number;
+}
+
+export class UpdateFeatureDto {
+  @IsNotEmpty()
+  field: string;
+
+  // @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  featureId: number;
+}
+
+export class UpdateProjectDto {
+  @IsNotEmpty()
+  field: string;
+
+  // @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  projectId: number;
 }
 
 @Controller('auth')
@@ -148,7 +194,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('/profile')
   getProfileData(@Request() req) {
-    console.log('req', req.user);
     return this.authService.getProfileData(req.user.sub);
   }
 
@@ -183,8 +228,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('create-project')
   createProject(@Body() projectDto: ProjectDto, @Request() req) {
-    console.log('project info' , projectDto)
-    console.log('req', req.user.sub)
     return this.authService.createProject(projectDto.name, projectDto.description, req.user.sub);
   }
 
@@ -199,10 +242,39 @@ export class AuthController {
       featureDto.projectId, 
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Post('update-project')
+  updateProject(
+    @Body() updateProjectDto: UpdateProjectDto, 
+    @Request() req
+  ) {
+    console.log('here', updateProjectDto);
+    return this.authService.updateProject(
+      updateProjectDto.field, 
+      updateProjectDto.value, 
+      req.user.sub, 
+      updateProjectDto.projectId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-feature')
+  updateFeature(
+    @Body() updateFeatureDto: UpdateFeatureDto, 
+    @Request() req
+  ) {
+    return this.authService.updateFeature(
+      updateFeatureDto.field, 
+      updateFeatureDto.value, 
+      req.user.sub, 
+      updateFeatureDto.featureId,
+    );
+  }
+
   @UseGuards(AuthGuard)
   @Post('create-task')
   createTask(@Body() taskDto: TaskDto, @Request() req) {
-    console.log('TASK DTO', taskDto, req.user.sub);
 
     return this.authService.createTask(
       taskDto.name,
@@ -211,6 +283,25 @@ export class AuthController {
       taskDto.featureId,
       taskDto.userStoryId,
     )
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-task')
+  updateTask(@Body() updateTaskDto: UpdateTaskDto, @Request() req) {
+
+    return this.authService.updateTask(updateTaskDto.field, updateTaskDto.value, req.user.sub, updateTaskDto.taskId,);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-user-story')
+  updateUserStory(@Body() updateUserStoryDto: UpdateUserStoryDto, @Request() req) {
+
+    return this.authService.updateUserStory(
+      updateUserStoryDto.field, 
+      updateUserStoryDto.value, 
+      req.user.sub, 
+      updateUserStoryDto.userStoryId,
+    );
   }
 
   @UseGuards(AuthGuard)

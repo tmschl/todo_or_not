@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Project } from "./entities/project.entity";
 import { Repository } from "typeorm";
@@ -131,5 +131,24 @@ export class ProjectsService {
     return this.addStatusesToProject(project);
   }
 
+  async updateProject(field: string, value: string, userId: number, projectId: number) {
 
+    const projectToUpdate = await this.projectsRepository.findOne({ 
+      where: { 
+        id: projectId, 
+        user: { id : userId }  
+      },
+    });
+
+
+    if (projectToUpdate) {
+      projectToUpdate[field] = value;
+      const updatedProject = await this.projectsRepository.save(projectToUpdate);
+
+      return await this.getProjectById(updatedProject.id);
+    } else {
+      throw new BadRequestException('you cannot edit that feature')
+    }
+  }
 }
+
