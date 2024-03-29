@@ -264,5 +264,37 @@ export class AuthService {
 
     return await this.userStoriesService.getUserStoryStatusById(userStoryId);
   }
+
+  async updateFeature(
+    field: string, 
+    value: string, 
+    userId: number, 
+    featureId: number,
+  ) {
+    const projectId = await this.featuresService.updateFeature(
+      field, 
+      value, 
+      userId, 
+      featureId, 
+    )
+
+    return await this.projectsService.getProjectById(projectId);
+  }
+
+
+  async updateProject(
+    field: string, 
+    value: string, 
+    userId: number, 
+    projectId: number,
+  ) {
+    return await this.projectsService.updateProject(
+      field, 
+      value, 
+      userId, 
+      projectId, 
+    )
+  }
+
 }
     

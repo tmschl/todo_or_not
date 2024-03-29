@@ -109,6 +109,7 @@ const TaskBox = ({ task, setStoryStatus }: Props) => {
       py={2}
       key={task.name}
       gap={4}
+      borderTop="1px"
     > 
 
       <Box flex={1}>

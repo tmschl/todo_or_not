@@ -120,13 +120,6 @@ const UserStoryDetailsAccordion = ({
     })
   }
 
-  // { updateStoryName ? (
-  //   <Input flex={1} h="40px" value={storyName} onChange={onChange} type="text" mr={4}/> 
-  //   ) : (
-  //     <Text flex={1} textAlign="left">{name}</Text>
-  //   )
-  // }
-
   return (
 
     <>

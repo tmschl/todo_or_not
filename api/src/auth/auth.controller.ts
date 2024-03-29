@@ -125,7 +125,7 @@ export class UpdateTaskDto {
   @Transform((params) => sanitizeHtml(params.value))
   field: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @Transform((params) => sanitizeHtml(params.value))
   value: string;
 
@@ -138,12 +138,36 @@ export class UpdateUserStoryDto {
   @Transform((params) => sanitizeHtml(params.value))
   field: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @Transform((params) => sanitizeHtml(params.value))
   value: string;
 
   @IsNotEmpty()
   userStoryId: number;
+}
+
+export class UpdateFeatureDto {
+  @IsNotEmpty()
+  field: string;
+
+  // @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  featureId: number;
+}
+
+export class UpdateProjectDto {
+  @IsNotEmpty()
+  field: string;
+
+  // @IsNotEmpty()
+  @Transform((params) => sanitizeHtml(params.value))
+  value: string;
+
+  @IsNotEmpty()
+  projectId: number;
 }
 
 @Controller('auth')
@@ -218,6 +242,36 @@ export class AuthController {
       featureDto.projectId, 
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Post('update-project')
+  updateProject(
+    @Body() updateProjectDto: UpdateProjectDto, 
+    @Request() req
+  ) {
+    console.log('here', updateProjectDto);
+    return this.authService.updateProject(
+      updateProjectDto.field, 
+      updateProjectDto.value, 
+      req.user.sub, 
+      updateProjectDto.projectId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-feature')
+  updateFeature(
+    @Body() updateFeatureDto: UpdateFeatureDto, 
+    @Request() req
+  ) {
+    return this.authService.updateFeature(
+      updateFeatureDto.field, 
+      updateFeatureDto.value, 
+      req.user.sub, 
+      updateFeatureDto.featureId,
+    );
+  }
+
   @UseGuards(AuthGuard)
   @Post('create-task')
   createTask(@Body() taskDto: TaskDto, @Request() req) {
